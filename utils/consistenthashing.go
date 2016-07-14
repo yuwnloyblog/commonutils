@@ -34,16 +34,18 @@ type ConsistentHash struct {
 	Nodes     map[uint32]*Node
 	numReps   int
 	Resources map[string]bool
+	isAutoSort bool
 	ring      HashRing
 	sync.RWMutex
 }
 
-func NewConsistentHash() *ConsistentHash {
+func NewConsistentHash(isAutoSort bool) *ConsistentHash {
 	return &ConsistentHash{
 		Nodes:     make(map[uint32]*Node),
 		numReps:   DEFAULT_REPLICAS,
 		Resources: make(map[string]bool),
 		ring:      HashRing{},
+		isAutoSort: isAutoSort,
 	}
 }
 
@@ -70,7 +72,9 @@ func (c *ConsistentHash) addNode(node *Node) bool {
 		c.Nodes[c.hashStr(str)] = node
 	}
 	c.Resources[node.Name] = true
-	c.sortHashRing()
+	if c.isAutoSort {
+		c.sortHashRing()
+	}
 	return true
 }
 
@@ -80,6 +84,10 @@ func (c *ConsistentHash) sortHashRing() {
 		c.ring = append(c.ring, k)
 	}
 	sort.Sort(c.ring)
+}
+
+func (c *ConsistentHash) Prepare(){
+	c.sortHashRing()
 }
 
 func (c *ConsistentHash) joinStr(i int, node *Node) string {
@@ -133,12 +141,14 @@ func (c *ConsistentHash) Remove(node *Node) {
 		str := c.joinStr(i, node)
 		delete(c.Nodes, c.hashStr(str))
 	}
-	c.sortHashRing()
+	if c.isAutoSort {
+		c.sortHashRing()
+	}
 }
 
 func main() {
 
-	cHashRing := NewConsistentHash()
+	cHashRing := NewConsistentHash(true)
 
 	for i := 0; i < 10; i++ {
 		si := fmt.Sprintf("%d", i)
