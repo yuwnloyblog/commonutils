@@ -22,6 +22,9 @@ type Properties struct{
 }
 
 func (self *Properties)GetString(key string)(string,error){
+	if self.Props == nil {
+		return "",&MissingError{"Please load properties file before use."}
+	}
 	if val,ok := self.Props[key];ok{
 		return val,nil
 	}
@@ -29,6 +32,9 @@ func (self *Properties)GetString(key string)(string,error){
 }
 
 func (self *Properties)GetInt(key string)(int,error){
+	if self.Props == nil {
+		return 0,&MissingError{"Please load properties file before use."}
+	}
 	if val,ok := self.Props[key];ok{
 		intVal,err:=strconv.Atoi(val)
 		if err == nil {
@@ -41,6 +47,9 @@ func (self *Properties)GetInt(key string)(int,error){
 }
 
 func (self *Properties)GetBool(key string)(bool,error){
+	if self.Props == nil {
+		return false,&MissingError{"Please load properties file before use."}
+	}
 	if val,ok := self.Props[key];ok{
 		bVal,err := strconv.ParseBool(val)
 		if err == nil{
@@ -53,6 +62,9 @@ func (self *Properties)GetBool(key string)(bool,error){
 }
 
 func (self *Properties)GetFloat(key string)(float64,error){
+	if self.Props == nil {
+		return float64(0),&MissingError{"Please load properties file before use."}
+	}
 	if val,ok := self.Props[key];ok{
 		fVal,err := strconv.ParseFloat(val,64)
 		if err == nil{
