@@ -31,6 +31,14 @@ func (self *Properties)GetString(key string)(string,error){
 	return "",&MissingError{"Missing key,"+key}
 }
 
+func (self *Properties)GetStringWithDefault(key,defaultVal string)string{
+	val,err := self.GetString(key)
+	if err != nil {
+		return defaultVal
+	}
+	return val
+}
+
 func (self *Properties)GetInt(key string)(int,error){
 	if self.Props == nil {
 		return 0,&MissingError{"Please load properties file before use."}
@@ -44,6 +52,13 @@ func (self *Properties)GetInt(key string)(int,error){
 		}
 	}
 	return 0,&MissingError{"Missing key,"+key}
+}
+func (self *Properties)GetIntWithDefault(key string, defaultVal int)int{
+	val,err := self.GetInt(key)
+	if err != nil {
+		return defaultVal
+	}
+	return val
 }
 
 func (self *Properties)GetBool(key string)(bool,error){
@@ -60,6 +75,13 @@ func (self *Properties)GetBool(key string)(bool,error){
 	}
 	return false,&MissingError{"Missing key,"+key}
 }
+func (self *Properties)GetBoolWithDefault(key string, defaultVal bool)bool{
+	val,err := self.GetBool(key)
+	if err != nil {
+		return defaultVal
+	}
+	return val
+}
 
 func (self *Properties)GetFloat(key string)(float64,error){
 	if self.Props == nil {
@@ -74,6 +96,14 @@ func (self *Properties)GetFloat(key string)(float64,error){
 		}
 	}
 	return float64(0),&MissingError{"Missing key,"+key}
+}
+
+func (self *Properties)GetFloatWithDefault(key string, defaultVal float64)float64{
+	val,err := self.GetFloat(key)
+	if err != nil {
+		return defaultVal
+	}
+	return val
 }
 
 /**
