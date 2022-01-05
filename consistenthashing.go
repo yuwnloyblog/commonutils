@@ -1,4 +1,4 @@
-package utils
+package commonutils
 
 import (
 	"fmt"
@@ -25,35 +25,35 @@ func (c HashRing) Swap(i, j int) {
 }
 
 type Node struct {
-	Name string
-	Entry interface{}
-	Weight   int
+	Name   string
+	Entry  interface{}
+	Weight int
 }
 
 type ConsistentHash struct {
-	Nodes     map[uint32]*Node
-	numReps   int
-	Resources map[string]bool
+	Nodes      map[uint32]*Node
+	numReps    int
+	Resources  map[string]bool
 	isAutoSort bool
-	ring      HashRing
+	ring       HashRing
 	sync.RWMutex
 }
 
 func NewConsistentHash(isAutoSort bool) *ConsistentHash {
 	return &ConsistentHash{
-		Nodes:     make(map[uint32]*Node),
-		numReps:   DEFAULT_REPLICAS,
-		Resources: make(map[string]bool),
-		ring:      HashRing{},
+		Nodes:      make(map[uint32]*Node),
+		numReps:    DEFAULT_REPLICAS,
+		Resources:  make(map[string]bool),
+		ring:       HashRing{},
 		isAutoSort: isAutoSort,
 	}
 }
 
-func (c *ConsistentHash) Add(name string,entry interface{}, weight int)bool{
+func (c *ConsistentHash) Add(name string, entry interface{}, weight int) bool {
 	node := &Node{
-		Name: name,
-		Entry: entry,
-		Weight:   weight,
+		Name:   name,
+		Entry:  entry,
+		Weight: weight,
 	}
 	return c.addNode(node)
 }
@@ -86,7 +86,7 @@ func (c *ConsistentHash) sortHashRing() {
 	sort.Sort(c.ring)
 }
 
-func (c *ConsistentHash) Prepare(){
+func (c *ConsistentHash) Prepare() {
 	c.sortHashRing()
 }
 
@@ -103,7 +103,7 @@ func (c *ConsistentHash) hashStr(key string) uint32 {
 func (c *ConsistentHash) Get(key string) *Node {
 	c.RLock()
 	defer c.RUnlock()
-	if len(c.Resources)<=0{
+	if len(c.Resources) <= 0 {
 		return nil
 	}
 	hash := c.hashStr(key)
