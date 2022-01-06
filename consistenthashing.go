@@ -66,8 +66,6 @@ func (c *ConsistentHash) addNode(node *Node) bool {
 	}
 
 	count := c.numReps * node.Weight
-
-	c.Nodes[c.hashStr(node.Name)] = node
 	for i := 0; i < count; i++ {
 		str := c.joinStr(i, node)
 		c.Nodes[c.hashStr(str)] = node
@@ -92,7 +90,7 @@ func (c *ConsistentHash) Prepare() {
 }
 
 func (c *ConsistentHash) joinStr(i int, node *Node) string {
-	return node.Name + "*" + strconv.Itoa(node.Weight) +
+	return node.Name + "*" + strconv.Itoa(5) +
 		"-" + strconv.Itoa(i)
 }
 
@@ -107,7 +105,7 @@ func (c *ConsistentHash) Get(key string) *Node {
 	if len(c.Resources) <= 0 {
 		return nil
 	}
-	hash := c.hashStr(key)
+	hash := c.hashStr(key + "*" + strconv.Itoa(5) + "-" + strconv.Itoa(0))
 	i := c.search(hash)
 
 	return c.Nodes[c.ring[i]]

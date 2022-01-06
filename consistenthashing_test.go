@@ -28,5 +28,4 @@ func TestNewConsistentHash(t *testing.T) {
 		fmt.Println(key, "", value)
 		return true
 	})
-
 }
