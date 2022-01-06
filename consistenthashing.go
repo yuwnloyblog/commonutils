@@ -1,7 +1,6 @@
 package commonutils
 
 import (
-	"fmt"
 	"hash/crc32"
 	"sort"
 	"strconv"
@@ -146,34 +145,4 @@ func (c *ConsistentHash) Remove(node *Node) {
 	if c.isAutoSort {
 		c.sortHashRing()
 	}
-}
-
-func main() {
-
-	cHashRing := NewConsistentHash(true)
-
-	for i := 0; i < 10; i++ {
-		si := fmt.Sprintf("%d", i)
-		cHashRing.Add("name"+si, 8080, 1)
-	}
-
-	for k, v := range cHashRing.Nodes {
-		fmt.Println("Hash:", k, " Name:", v.Name)
-	}
-
-	ipMap := make(map[string]int, 0)
-	for i := 0; i < 1000; i++ {
-		si := fmt.Sprintf("key%d", i)
-		k := cHashRing.Get(si)
-		if _, ok := ipMap[k.Name]; ok {
-			ipMap[k.Name] += 1
-		} else {
-			ipMap[k.Name] = 1
-		}
-	}
-
-	for k, v := range ipMap {
-		fmt.Println("Node Name:", k, " count:", v)
-	}
-
 }
