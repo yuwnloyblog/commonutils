@@ -67,6 +67,8 @@ func (c *ConsistentHash) addNode(node *Node) bool {
 	}
 
 	count := c.numReps * node.Weight
+
+	c.Nodes[c.hashStr(node.Name)] = node
 	for i := 0; i < count; i++ {
 		str := c.joinStr(i, node)
 		c.Nodes[c.hashStr(str)] = node
